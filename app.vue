@@ -2,35 +2,35 @@
 import { useInfiniteQuery, useQuery } from "./composable/useQuery";
 import { getDog } from "./services";
 
-const { data, isFetching } = await useQuery("simple-query-key", async () => {
-  return await getDog();
-});
-
-// const {
-//   data,
-//   isFetching,
-//   fetchNextPage,
-//   fetchPreviousPage,
-// } = await useInfiniteQuery(
-//   "infinite-query-key",
-//   ({ pageParam = 1 }) => getDog(pageParam),
-//   {
-//     getNextPageParam: ({ page }) => page + 1,
-//     getPreviousPageParam: ({ page }) => page - 1,
-//   }
-// );
-
-// const messages = computed(() => {
-//   return data.value?.pages.flatMap(({ results }) => results) || [];
+// const { data, isFetching } = await useQuery("simple-query-key", async () => {
+//   return await getDog();
 // });
+
+const {
+  data,
+  isFetching,
+  fetchNextPage,
+  fetchPreviousPage,
+} = await useInfiniteQuery(
+  "infinite-query-key",
+  ({ pageParam = 1 }) => getDog(pageParam),
+  {
+    getNextPageParam: ({ page }) => page + 1,
+    getPreviousPageParam: ({ page }) => page - 1,
+  }
+);
+
+const messages = computed(() => {
+  return data.value?.pages.flatMap(({ results }) => results) || [];
+});
 </script>
 
 <template>
-  <p>{{ data }}</p>
+  <!-- <p>{{ data }}</p> -->
+  <p v-for="m of messages">{{ m }}</p>
   <p v-if="isFetching">Loading...</p>
-  <!-- <p v-for="m of messages">{{ m }}</p>
   <button @click="fetchNextPage()">Next</button>
-  <button @click="fetchPreviousPage()">Previous</button> -->
+  <button @click="fetchPreviousPage()">Previous</button>
 </template>
 <style>
 * {
